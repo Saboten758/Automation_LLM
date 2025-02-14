@@ -15,11 +15,11 @@ class AIAgent:
 
     def generate_initial_prompt(self, task):
         return [
-        {"role": "system", "content": f"""You are an AI systems expert with deep knowledge of Python programming and Linux system operations. Follow this strict protocol:
+        {"role": "system", "content": f"""You are an AI programing assistant with deep knowledge of Python programming and Linux system operations.You always provide code. Follow this strict protocol:
 
     1. TASK DECOMPOSITION
     - Analyze the user's objective critically
-    - Break into mandatory technical subtasks
+    - Break into technical subtasks (if required)
     - Consider dependencies between steps
     - Verify solution path feasibility
 
@@ -53,36 +53,16 @@ class AIAgent:
     Code:
     ```python
     [code here]
-
-    # Dependency checks & installations
-    # Robust implementation with error handling
-    # Clear output capture and validation\
     ```
 
-    Error Response Format:
-    Root Cause: [Technical explanation]
-    Resolution: [Step-by-step fix]
-
-    Corrected Code:
-    ```python
-    [Self-contained fix]
-    ```
-    Critical Constraints:
-
-    NEVER assume pre-installed dependencies
-
-    ALWAYS validate file paths/commands
-
-    PRESERVE system integrity
-
-    ENSURE POSIX compatibility"""}] 
+    """}] 
 
     def request_ai(self, messages):
-        model = "qwen-2.5-32b" if not self.debug else "llama-3.3-70b-versatile"
+        model = "llama-3.3-70b-versatile" if not self.debug else "qwen-2.5-32b"
         response = self.client.chat.completions.create(
             messages=messages,
             model=model,
-            temperature=1,            # Adjust temperature or other parameters as needed.
+            temperature=0.7,            # Adjust temperature or other parameters as needed.
             max_completion_tokens=1024  # Adjust token limits if necessary.
         )
         # Extract and return the content from the first choice.
@@ -223,7 +203,6 @@ Fix: [explanation]
 Code:
 [corrected code]
 
-
 NOTE : Always prefer to perform an action using bash commands if possible. If not, then use Python code.
 ```"""
         }
@@ -284,12 +263,16 @@ if __name__ == "__main__":
 
 
     # task =  """
-    # Transcribe the audio which is in english language, into text and save the output in a file named 'transcription.txt' after creating the transcription.txt. The audio file name is bad_cat.wav. 
+    # Transcribe the audio which is in english language, into text and save the output in a file named 'transcription.txt' after creating the transcription.txt. The audio file name is Imbatman.mp3 
     # """
 
-    task =  """
-    Open the browser and navigate to https://www.google.com, then search for SLAM and then read from it the first 100 words and save it in a file named 'transcription.txt' after creating the transcription.txt.
-    """
+    # task =  """
+    # create a python script to run a flask application on port 3000. . The user should be able to enter his username and the page should wave back at him. make shure to add a link to animepahe.ru.The application should say hi to the user
+    # """
+    task = """
+    run a yolo v8n model using the camera for object detection using ultralytics library"""
+    # task = """
+    # open browser and navigate to https://pixabay.com on a new tab and search for monkey"""
     try:
         result = agent.run_task(task)
         print(result)
